@@ -1,0 +1,17 @@
+import React from "react";
+
+/**
+ * Reusable Card container component
+ */
+const Card = ({ children, className = "", ...props }) => {
+  return (
+    <div
+      className={`bg-white rounded-xl border border-slate-200/80 shadow-sm p-6 ${className}`}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
+
+export default Card;
