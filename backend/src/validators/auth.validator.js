@@ -31,3 +31,19 @@ export const registerValidator = [
     .withMessage("Role must be either 'user' or 'admin'")
 ];
 
+/**
+ * Validation rules for user login
+ */
+export const loginValidator = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please provide a valid email address")
+    .normalizeEmail(),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+];

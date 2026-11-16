@@ -1,7 +1,9 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 import apiRoutes from "./routes/index.js";
 import { notFound, errorHandler } from "./middlewares/error.middleware.js";
 
@@ -23,9 +25,10 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("combined"));
 }
 
-// Body Parsing Middlewares
+// Body Parsing & Cookie Middlewares
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(cookieParser());
 
 // Root Route (Quick verification)
 app.get("/", (req, res) => {
@@ -43,4 +46,3 @@ app.use(notFound);
 app.use(errorHandler);
 
 export default app;
-

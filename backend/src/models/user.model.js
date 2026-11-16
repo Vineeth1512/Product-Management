@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
   {
@@ -63,6 +64,22 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 /**
+ * Generate signed JWT token containing user ID and role
+ */
+userSchema.methods.generateToken = function () {
+  return jwt.sign(
+    {
+      id: this._id,
+      role: this.role
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN || "7d"
+    }
+  );
+};
+
+/**
  * Sanitize user object to ensure password hash is never returned in JSON outputs
  */
 userSchema.methods.toJSON = function () {
@@ -74,4 +91,3 @@ userSchema.methods.toJSON = function () {
 const User = mongoose.model("User", userSchema);
 
 export default User;
-
