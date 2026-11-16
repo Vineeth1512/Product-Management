@@ -14,7 +14,7 @@ app.use(helmet());
 
 // Production-ready CORS configuration
 const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(",").map((origin) => origin.trim())
+  ? process.env.CLIENT_URL.split(",").map((origin) => origin.trim().replace(/\/+$/, ""))
   : ["http://localhost:5173"];
 
 app.use(
@@ -23,7 +23,14 @@ app.use(
       // Allow requests with no origin (e.g. mobile apps, curl, Postman, server-to-server)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+      // Normalize origin by stripping trailing slash
+      const cleanOrigin = origin.replace(/\/+$/, "");
+
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        cleanOrigin.endsWith(".vercel.app") || // Automatically allows Vercel production & preview deployments
+        process.env.NODE_ENV !== "production"
+      ) {
         return callback(null, true);
       }
       return callback(new Error("CORS policy violation: Access from this origin is not allowed."));

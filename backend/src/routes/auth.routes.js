@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   registerUser,
   loginUser,
+  logoutUser,
   getMe
 } from "../controllers/auth.controller.js";
 import {
@@ -16,6 +17,8 @@ const router = Router();
 // Public Routes
 router.post("/register", validate(registerValidator), registerUser);
 router.post("/login", validate(loginValidator), loginUser);
+router.post("/logout", logoutUser);
+router.get("/logout", logoutUser);
 
 // Protected Routes (Requires valid JWT)
 router.get("/me", protect, getMe);

@@ -12,7 +12,7 @@ const initialState = {
   token: storedToken,
   isAuthenticated: !!storedToken || !!storedUser,
   isLoading: false,
-  isCheckingAuth: true, // Used to verify existing session on initial load
+  isCheckingAuth: !!storedToken || !!storedUser, // Only check if a token or user exists
   error: null,
 };
 
@@ -24,7 +24,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await api.post("/auth/register", userData);
-      return response.data; // response is normalized by axios interceptor
+      return response.data;
     } catch (err) {
       return rejectWithValue(err.message || "Registration failed");
     }
@@ -42,6 +42,22 @@ export const loginUser = createAsyncThunk(
       return response.data; // { user, token }
     } catch (err) {
       return rejectWithValue(err.message || "Invalid email or password");
+    }
+  }
+);
+
+/**
+ * Log out user: clears server-side cookie and local state
+ */
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, { dispatch }) => {
+    try {
+      await api.post("/auth/logout");
+    } catch (err) {
+      console.warn("Server logout error:", err.message);
+    } finally {
+      dispatch(authSlice.actions.logout());
     }
   }
 );
@@ -107,7 +123,6 @@ const authSlice = createSlice({
         state.error = null;
         state.isCheckingAuth = false;
 
-        // Persist to localStorage for client-side persistence
         localStorage.setItem("user", JSON.stringify(action.payload.user));
         if (action.payload.token) {
           localStorage.setItem("token", action.payload.token);

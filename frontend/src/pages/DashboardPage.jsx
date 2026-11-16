@@ -1,7 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { User, Mail, Shield, KeyRound, LogOut, Package, CheckCircle2 } from "lucide-react";
-import { logout } from "../redux/slices/authSlice";
+import { useNavigate } from "react-router-dom";
+import { User, Mail, Shield, KeyRound, LogOut, CheckCircle2 } from "lucide-react";
+import { logoutUser } from "../redux/slices/authSlice";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import toast from "react-hot-toast";
@@ -11,11 +12,13 @@ import toast from "react-hot-toast";
  */
 const DashboardPage = () => {
   const dispatch = useDispatch();
-  const { user, token } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     toast.success("Logged out successfully");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -46,7 +49,7 @@ const DashboardPage = () => {
         </Button>
       </div>
 
-      {/* User Profile & Session Diagnostics */}
+      {/* User Profile & Security Diagnostics */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card>
           <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">

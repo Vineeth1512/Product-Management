@@ -100,3 +100,24 @@ export const getMe = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, req.user, "Current user profile fetched successfully"));
 });
+
+/**
+ * @desc    Logout user & clear authentication cookie
+ * @route   POST /api/v1/auth/logout
+ * @access  Public / Private
+ */
+export const logoutUser = asyncHandler(async (req, res) => {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  // Clear authentication cookie immediately
+  res.cookie("token", "", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    expires: new Date(0),
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "User logged out successfully"));
+});

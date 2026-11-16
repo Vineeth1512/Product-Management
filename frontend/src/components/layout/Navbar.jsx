@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Package, LogIn, UserPlus, LogOut, LayoutDashboard, User } from "lucide-react";
-import { logout } from "../../redux/slices/authSlice";
+import { Package, LogIn, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
+import { logoutUser } from "../../redux/slices/authSlice";
 import toast from "react-hot-toast";
 
 /**
@@ -13,10 +13,10 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     toast.success("Logged out successfully");
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -73,7 +73,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                   title="Sign Out"
                 >
                   <LogOut className="w-4 h-4" />
