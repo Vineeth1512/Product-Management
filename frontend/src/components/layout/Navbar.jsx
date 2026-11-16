@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Package, LogIn, UserPlus, LogOut, LayoutDashboard } from "lucide-react";
+import { Package, LogIn, UserPlus, LogOut, LayoutDashboard, ShoppingBag } from "lucide-react";
 import { logoutUser } from "../../redux/slices/authSlice";
 import toast from "react-hot-toast";
 
 /**
- * Main application navigation bar with authentication-aware links
+ * Main application navigation bar with Product catalog link and auth states
  */
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -37,25 +37,40 @@ const Navbar = () => {
           </Link>
 
           {/* Navigation Links */}
-          <nav className="flex items-center gap-3">
+          <nav className="flex items-center gap-2 sm:gap-3">
+            {/* Products Catalog Link (Visible to All) */}
+            <NavLink
+              to="/products"
+              className={({ isActive }) =>
+                `inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? "bg-slate-100 text-slate-900 font-semibold"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                }`
+              }
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>Products</span>
+            </NavLink>
+
             {isAuthenticated ? (
               <>
                 <NavLink
                   to="/dashboard"
                   className={({ isActive }) =>
-                    `inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    `inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                       isActive
-                        ? "bg-slate-100 text-slate-900"
+                        ? "bg-slate-100 text-slate-900 font-semibold"
                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                     }`
                   }
                 >
                   <LayoutDashboard className="w-4 h-4" />
-                  <span>Dashboard</span>
+                  <span className="hidden sm:inline">Dashboard</span>
                 </NavLink>
 
                 {/* User Info Badge */}
-                <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-200 text-xs">
+                <div className="hidden md:flex items-center gap-2 pl-2 border-l border-slate-200 text-xs">
                   <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold uppercase">
                     {user?.name?.charAt(0) || "U"}
                   </div>
@@ -85,7 +100,7 @@ const Navbar = () => {
                 <NavLink
                   to="/login"
                   className={({ isActive }) =>
-                    `inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    `inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                       isActive
                         ? "bg-slate-100 text-slate-900"
                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
