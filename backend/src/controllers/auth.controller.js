@@ -12,11 +12,12 @@ const sendTokenResponse = (user, statusCode, res, message) => {
 
   // Configure cookie options
   const cookieExpiresDays = parseInt(process.env.COOKIE_EXPIRES_IN, 10) || 7;
+  const isProduction = process.env.NODE_ENV === "production";
   const cookieOptions = {
     expires: new Date(Date.now() + cookieExpiresDays * 24 * 60 * 60 * 1000),
     httpOnly: true, // Prevents client-side JavaScript from reading the cookie (protects against XSS)
-    secure: process.env.NODE_ENV === "production", // Only transmit cookie over HTTPS in production
-    sameSite: "strict" // Protects against Cross-Site Request Forgery (CSRF)
+    secure: isProduction, // Must be true when sameSite is 'none' (HTTPS required)
+    sameSite: isProduction ? "none" : "lax" // 'none' enables cross-site cookies between Vercel & Render
   };
 
   return res
